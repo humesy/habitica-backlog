@@ -32,11 +32,11 @@ jobs:
 
           curl -X POST https://habitica.com/api/v3/tasks/user \
             -H "X-Api-Key: $API_KEY" \
-            -H "X-Client: $USER_ID \
-            -H "X-Api-User: $USER_ID \
+            -H "X-Api-User: $USER_ID" \
+            -H "X-Client: ${USER_ID}-gh-action" \
             -H "Content-Type: application/json" \
             -d '{
               "text": "'"$ISSUE_TITLE"'",
-              "type": "'"todo"'",
-              "priority	": '"$EFFORT"'
+              "type": "todo",
+              "priority": '"$EFFORT"'
             }'
