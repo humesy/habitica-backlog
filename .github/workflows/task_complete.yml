@@ -38,5 +38,6 @@ jobs:
             -d '{
               "text": "'"$ISSUE_TITLE"'",
               "type": "todo",
-              "priority": '"$EFFORT"'
+              "priority": '"$EFFORT"',
+              "notes": "GITHUB"
             }'
