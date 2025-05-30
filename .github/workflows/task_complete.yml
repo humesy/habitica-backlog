@@ -1,0 +1,18 @@
+# This is a basic workflow that is manually triggered
+
+name: Task Complete
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  on-issue-closed:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print issue info
+        run: |
+          echo "Issue #${{ github.event.issue.number }} was closed."
+          echo "Title: ${{ github.event.issue.title }}"
+          echo "URL: ${{ github.event.issue.html_url }}"
