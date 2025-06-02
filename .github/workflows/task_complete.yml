@@ -14,6 +14,7 @@ jobs:
           API_KEY: ${{ secrets.HABITICA_API_KEY }}
           USER_ID: ${{ secrets.HABITICA_USER_ID }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
           LABELS_JSON: ${{ toJson(github.event.issue.labels) }}
         run: |
           # Extract effort label and map to value
@@ -30,6 +31,15 @@ jobs:
           echo "Detected label: $LABEL"
           echo "Mapped effort: $EFFORT"
 
+          # Parse checklist items from issue body
+
+          CHECKLIST=$(echo "$ISSUE_BODY" | grep -E '^\s*-\s*\[[xX ]\]' | \
+            sed -E 's/^\s*-\s*\[([xX ])\]\s*(.*)$/{"text":"\2","completed":\1}/' | \
+            sed -E 's/true|x/true/;s/false| /false/' | \
+            jq -s '.')
+
+          echo "Parsed checklist: $CHECKLIST"
+
           curl -X POST https://habitica.com/api/v3/tasks/user \
             -H "X-Api-Key: $API_KEY" \
             -H "X-Api-User: $USER_ID" \
@@ -39,5 +49,6 @@ jobs:
               "text": "'"$ISSUE_TITLE"'",
               "type": "todo",
               "priority": '"$EFFORT"',
-              "notes": "GITHUB"
+              "notes": "GITHUB",
+              "checklist": '"$CHECKLIST"'
             }'
