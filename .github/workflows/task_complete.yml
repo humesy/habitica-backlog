@@ -34,9 +34,12 @@ jobs:
           # Parse checklist items from issue body
 
           CHECKLIST=$(echo "$ISSUE_BODY" | grep -E '^\s*-\s*\[[xX ]\]' | \
-            sed -E 's/^\s*-\s*\[([xX ])\]\s*(.*)$/{"text":"\2","completed":\1}/' | \
-            sed -E 's/true|x/true/;s/false| /false/' | \
+            sed -E 's/^\s*-\s*\[x\]\s*(.*)$/{"text":"\1","completed":true}/I' | \
+            sed -E 's/^\s*-\s*\[\s\]\s*(.*)$/{"text":"\1","completed":false}/I' | \
             jq -s '.')
+          
+          # If CHECKLIST is empty, set it to an empty JSON array
+          CHECKLIST=${CHECKLIST:-[]}
 
           echo "Parsed checklist: $CHECKLIST"
 
